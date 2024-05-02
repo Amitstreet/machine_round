@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Multi-level Accordion</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .accordion {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .accordion-header {
+    background-color: #f4f4f4;
+    padding: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .accordion-header:hover {
+    background-color: #e0e0e0;
+  }
+
+  .accordion-content {
+    padding: 15px;
+    background-color: #f9f9f9;
+    display: none;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+  }
+
+  .accordion-content.active {
+    display: block;
+  }
+
+  .accordion-content p {
+    margin: 0;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div id="accordionContainer" class="accordion"></div>
+
+<script>
+  class Accordion {
+    constructor(containerId, data) {
+      this.container = document.getElementById(containerId);
+      this.data = data;
+      this.render();
+      this.addEventListeners();
+    }
+
+    createAccordionItem({ header, content }) {
+      const accordionItem = document.createElement('div');
+      accordionItem.classList.add('accordion-item');
+
+      const accordionHeader = document.createElement('div');
+      accordionHeader.classList.add('accordion-header');
+      accordionHeader.textContent = header;
+
+      const accordionContent = document.createElement('div');
+      accordionContent.classList.add('accordion-content');
+      if (typeof content === 'string') {
+        accordionContent.innerHTML = `<p>${content}</p>`;
+      } else {
+        content.forEach(subItem => {
+          const subAccordionItem = this.createAccordionItem(subItem);
+          accordionContent.appendChild(subAccordionItem);
+        });
+      }
+
+      accordionItem.appendChild(accordionHeader);
+      accordionItem.appendChild(accordionContent);
+
+      return accordionItem;
+    }
+
+    render() {
+      this.data.forEach(item => {
+        const accordionItem = this.createAccordionItem(item);
+        this.container.appendChild(accordionItem);
+      });
+    }
+
+    addEventListeners() {
+      this.container.addEventListener('click', (event) => {
+        if (event.target && event.target.classList.contains('accordion-header')) {
+          const accordionContent = event.target.nextElementSibling;
+          accordionContent.classList.toggle('active');
+        }
+      });
+    }
+  }
+
+  const accordionData = [
+    {
+      header: "Section 1",
+      content: [
+        { header: "Subsection 1.1", content: "Content of subsection 1.1" },
+        { header: "Subsection 1.2", content: "Content of subsection 1.2" }
+      ]
+    },
+    {
+      header: "Section 2",
+      content: "Content of section 2"
+    }
+  ];
+
+  const accordion = new Accordion('accordionContainer', accordionData);
+</script>
+
+</body>
+</html>

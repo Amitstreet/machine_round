@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <section class="items">
+        <div class="main_container">
+        </div>
+    </section>
+</body>
+</html>
+<style>
+     .main_container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .main_container>div {
+        width: calc(33.33% - 20px); /* Adjust according to your preference */
+        /* Set a fixed width for the image container */
+        margin: 10px;
+        /* Optional: Add margin around each image container */
+        overflow: hidden;
+        /* Ensure images don't overflow the container */
+    }
+
+    .main_container img {
+        width: 100%;
+        /* Set the width of the image to fill its container */
+        height: 100%;
+        /* Set the height of the image to fill its container */
+        object-fit: cover;
+        /* Ensure images maintain their aspect ratio and cover the container */
+    }
+
+    @media only screen and (max-width: 600px) {
+        /* Adjust for smaller screens */
+        .main_container>div {
+            width: calc(50% - 20px); /* Adjust according to your preference */
+        }
+    }
+
+    @media only screen and (max-width: 400px) {
+        /* Adjust for even smaller screens */
+        .main_container>div {
+            width: calc(100% - 20px); /* Adjust according to your preference */
+        }
+    }
+</style>
+<script>
+    class drag {
+        constructor(image) {
+            this.img = image;
+            this.container = document.querySelector(".main_container");
+        }
+       
+        creat() {
+            let parent = this.container;
+            this.img.forEach((ele, idx) => {
+                let div_ele = document.createElement("div");
+                let img_ele = document.createElement("img");
+                div_ele.classList.add("drag" + `${idx}`);
+                div_ele.classList.add("draggable");
+                div_ele.setAttribute("draggable","true");
+                img_ele.setAttribute("src", `${ele}`)
+                div_ele.appendChild(img_ele);
+                parent.appendChild(div_ele);
+            });
+        }
+        process()
+        {
+            this.drag_ele= document.querySelectorAll('.draggable');
+
+            const swap=()=>
+            {
+               let swap= this.drop_src;
+               this.drop_ele.src= this.dr_src;
+               this.dr_ele.src=swap;
+            }
+
+            const dragstart=(event)=>{
+                this.dr_ele=event.target;
+                this.dr_src= event.target.src;
+            }
+            
+            const dragover=(event)=>{
+                event.preventDefault()
+            }
+
+            const dragenter=(event)=>{
+                event.preventDefault()
+
+            }
+
+            const dragEnd=(event)=>{
+                this.drop_ele= event.target;
+                this.drop_src= event.target.src;
+                swap();
+            }
+            this.drag_ele.forEach((ele,idx)=>{
+                ele.addEventListener("dragstart",dragstart);
+                ele.addEventListener("dragover",dragover);
+                ele.addEventListener("dragenter",dragenter)
+                ele.addEventListener('drop', dragEnd);
+            })   
+        }
+    }
+    let Drag = new drag([
+        "https://source.unsplash.com/random?1",
+        "https://source.unsplash.com/random?2",
+        "https://source.unsplash.com/random?3",
+        "https://source.unsplash.com/random?4",
+        "https://source.unsplash.com/random?5",
+        "https://source.unsplash.com/random?6",
+        "https://source.unsplash.com/random?7",
+        "https://source.unsplash.com/random?8",
+        "https://source.unsplash.com/random?9"
+    ])
+    Drag.creat();
+    Drag.process();
+</script>

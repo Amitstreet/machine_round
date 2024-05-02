@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress Bar</title>
+<style>
+.container {
+  width: 400px;
+  margin: 50px auto;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 30px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.progress {
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 4px;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.slider {
+  width: 200px;
+}
+
+.btn {
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="progress-bar">
+    <div class="progress"></div>
+    <div class="progress-text">0%</div>
+  </div>
+  <div class="controls">
+    <input type="range" class="slider" min="1" max="100" value="50" oninput="updateSpeed(this.value)">
+    <button class="btn" onclick="startProgress()">Start</button>
+    <button class="btn" onclick="stopProgress()">Stop</button>
+    <button class="btn" onclick="resetProgress()">Reset</button>
+  </div>
+</div>
+
+<script>
+let progressInterval;
+const progressBar = document.querySelector('.progress');
+const progressBarWidth = document.querySelector('.progress-bar').clientWidth;
+const progressText = document.querySelector('.progress-text');
+const speedControl = document.querySelector('.slider');
+let progress = 0;
+let speed = 50;
+
+function startProgress() {
+  clearInterval(progressInterval);
+  progressInterval = setInterval(() => {
+    progress += speed; // Use speed directly for progress calculation
+    if (progress > progressBarWidth) {
+      clearInterval(progressInterval);
+    } else {
+      progressBar.style.width = `${progress}px`;
+      progressText.textContent = `${Math.round((progress / progressBarWidth) * 100)}%`;
+    }
+  }, 100); // Use speed as the interval for progress
+}
+
+function stopProgress() {
+  clearInterval(progressInterval);
+}
+
+function resetProgress() {
+  clearInterval(progressInterval);
+  progress = 0;
+  progressBar.style.width = '0px';
+  progressText.textContent = '0%';
+}
+
+function updateSpeed(value) {
+  speed = parseInt(value); // Update speed directly
+}
+
+</script>
+
+</body>
+</html>

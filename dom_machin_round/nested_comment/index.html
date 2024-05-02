@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment System</title>
+  <style>
+    .comment-container {
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      padding: 10px;
+    }
+
+    .comment {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .reply {
+      margin-left: 20px;
+      border-left: 1px solid #ccc;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .post-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+    }
+
+    .post-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      resize: none;
+    }
+
+    .post-input:focus {
+      outline: none;
+      border-color: #4267B2;
+      /* Facebook blue */
+    }
+
+    .post-input::placeholder {
+      color: #aaa;
+    }
+
+    .post-button {
+      margin-top: 10px;
+      padding: 8px 20px;
+      background-color: #4267B2;
+      /* Facebook blue */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .post-button:hover {
+      background-color: #385898;
+      /* Darker shade of Facebook blue */
+    }
+
+    .toggle-button {
+      padding: 5px 10px;
+      background-color: #ccc;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="post-container">
+    <textarea class="post-input" placeholder="What's on your mind?"></textarea>
+    <button class="post-button">Post</button>
+  </div>
+
+  <div id="comments"></div>
+
+  <script>
+    class Comment {
+      constructor(id, author, content, timestamp) {
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.likes = 0;
+        this.replies = [];
+        this.showReplies = false; // Flag to track if replies are shown or hidden
+      }
+
+      editContent(newContent) {
+        this.content = newContent;
+      }
+    }
+
+    class CommentSystem {
+      constructor() {
+        this.comments = [];
+        this.commentIdCounter = 0; // Initialize comment ID counter
+      }
+
+      addComment(author, content) {
+        const timestamp = new Date();
+        const comment = new Comment(++this.commentIdCounter, author, content, timestamp);
+        this.comments.push(comment);
+        this.renderComments();
+      }
+
+      addReply(parentId) {
+        const replyInput = document.getElementById(`replyInput-${parentId}`);
+        const content = replyInput.value;
+        if (content.trim() === '') {
+          alert("Please enter a valid reply.");
+          return;
+        }
+        const author = "Anonymous"; // You can modify this to take user input for author name
+        const parentComment = this.findCommentById(parentId);
+
+        if (parentComment) {
+          const timestamp = new Date();
+          const reply = new Comment(++this.commentIdCounter, author, content, timestamp);
+          parentComment.replies.push(reply);
+          this.renderComments();
+          replyInput.value = ''; // Clear the input field after adding reply
+        } else {
+          console.log("Parent comment not found.");
+        }
+      }
+
+      findCommentById(id, comments = this.comments) {
+        for (const comment of comments) {
+          if (comment.id === id) {
+            return comment;
+          }
+          if (comment.replies.length > 0) {
+            const foundComment = this.findCommentById(id, comment.replies);
+            if (foundComment) {
+              return foundComment;
+            }
+          }
+        }
+        return null;
+      }
+
+      editComment(id) {
+        const newContent = prompt("Enter new content:");
+        if (newContent !== null) {
+          const comment = this.findCommentById(id);
+          if (comment) {
+            comment.editContent(newContent);
+            this.renderComments();
+          } else {
+            console.log("Comment not found.");
+          }
+        }
+      }
+
+      likeComment(id) {
+        const comment = this.findCommentById(id);
+        if (comment) {
+          comment.likes++;
+          this.renderComments();
+        } else {
+          console.log("Comment not found.");
+        }
+      }
+
+      toggleReplies(commentId) {
+        const comment = this.findCommentById(commentId);
+        if (comment) {
+          comment.showReplies = !comment.showReplies;
+          this.renderComments();
+        } else {
+          console.log("Comment not found.");
+        }
+      }
+
+      renderComments(comments = this.comments, container = document.getElementById('comments')) {
+        container.innerHTML = ''; // Clear previous comments
+
+        comments.forEach(comment => {
+          const commentElement = document.createElement('div');
+          if (container === document.getElementById('comments')) {
+            commentElement.classList.add('comment-container');
+          } else {
+            commentElement.classList.add('comment');
+          }
+          commentElement.innerHTML = `
+            <p><strong>${comment.author}</strong>: ${comment.content}</p>
+            <button onclick="commentSystem.likeComment(${comment.id})">Like (${comment.likes})</button>
+            <button onclick="commentSystem.editComment(${comment.id})">Edit</button>
+            <button onclick="commentSystem.toggleReplies(${comment.id})" class="toggle-button">${comment.showReplies ? '-' : '+'}</button>
+            <input type="text" placeholder="Reply..." id="replyInput-${comment.id}">
+            <button onclick="commentSystem.addReply(${comment.id})">Reply</button>
+          `;
+          if (comment.replies.length > 0 && comment.showReplies) {
+            const replyContainer = document.createElement('div');
+            replyContainer.classList.add('replies');
+            this.renderComments(comment.replies, replyContainer); // Recursive call for nested replies
+            commentElement.appendChild(replyContainer); // Append reply container to parent comment element
+          }
+
+          container.appendChild(commentElement);
+        });
+      }
+    }
+
+    let commentSystem = new CommentSystem();
+
+    let ele = document.querySelector('.post-button');
+    let input_box = document.querySelector(".post-input");
+
+    ele.addEventListener("click", () => {
+      let text = input_box.value;
+      commentSystem.addComment("amit", `${text}`)
+      commentSystem.renderComments();
+      input_box.value = ''; // Clear the input field after posting comment
+    })
+
+  </script>
+</body>
+
+</html>

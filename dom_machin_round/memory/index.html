@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Game</title>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: lightgray;
+      border: 1px solid gray;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-size: 24px;
+    }
+
+    .matched {
+      background-color: green;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-container" id="game-container"></div>
+  <script>
+    // Create an array of card values
+    const symbols = ['🍎', '🍊', '🍋', '🍉', '🍇', '🍒', '🥥', '🥝'];
+
+    // Duplicate the symbols to make pairs
+    const cards = [...symbols, ...symbols];
+
+    // Shuffle the cards
+    shuffle(cards);
+
+    // Create a game container element
+    const gameContainer = document.getElementById('game-container');
+
+    // Create a new card element for each symbol
+    cards.forEach(symbol => {
+      const cardElement = document.createElement('div');
+      cardElement.classList.add('card');
+      cardElement.innerHTML = '<span class="hidden">' + symbol + '</span>';
+      cardElement.addEventListener('click', () => flipCard(cardElement));
+      gameContainer.appendChild(cardElement);
+    });
+
+    let flippedCards = [];
+    let matches = 0;
+
+    function flipCard(cardElement) {
+      // If the card is already matched or flipped, do nothing
+      if (cardElement.classList.contains('matched') || flippedCards.length === 2) {
+        return;
+      }
+
+      // Reveal the symbol by removing the 'hidden' class
+      cardElement.firstChild.classList.remove('hidden');
+
+      // Add the card to the flipped cards array
+      flippedCards.push(cardElement);
+
+      // If two cards are flipped, check for a match
+      if (flippedCards.length === 2) {
+        const [card1, card2] = flippedCards;
+        if (card1.firstChild.textContent === card2.firstChild.textContent) {
+          // If cards match, mark them as matched
+          card1.classList.add('matched');
+          card2.classList.add('matched');
+          matches++;
+
+          // Check if all cards are matched
+          if (matches === symbols.length) {
+            setTimeout(() => alert('Congratulations! You won!'), 500);
+          }
+        } else {
+          // If cards don't match, flip them back after a short delay
+          setTimeout(() => {
+            card1.firstChild.classList.add('hidden');
+            card2.firstChild.classList.add('hidden');
+          }, 1000);
+        }
+
+        // Clear the flipped cards array
+        flippedCards = [];
+      }
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+
+</html>

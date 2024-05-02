@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    #stopwatch {
+        font-size: 2em;
+        margin-top: 50px;
+    }
+
+    #controls {
+        margin-top: 20px;
+    }
+
+    button {
+        font-size: 1em;
+        padding: 10px 20px;
+        margin: 0 5px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div id="stopwatch">00:00:00</div>
+<div id="controls">
+    <button onclick="startStopwatch()">Start</button>
+    <button onclick="stopStopwatch()">Stop</button>
+    <button onclick="resetStopwatch()">Reset</button>
+</div>
+<script>
+    var startTime;
+    var elapsedTime = 0;
+    var timerInterval;
+
+    function startStopwatch() {
+        if (!timerInterval) {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTime, 10);
+        }
+    }
+
+    function stopStopwatch() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function resetStopwatch() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        elapsedTime = 0;
+        document.getElementById('stopwatch').innerText = '00:00:00';
+    }
+
+    function updateTime() {
+        var currentTime = Date.now();
+        elapsedTime = currentTime - startTime;
+        var formattedTime = formatTime(elapsedTime);
+        document.getElementById('stopwatch').innerText = formattedTime;
+    }
+
+    function formatTime(time) {
+        var hours = Math.floor(time / (1000 * 60 * 60));
+        var minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((time % (1000 * 60)) / 1000);
+        var milliseconds = Math.floor((time % 1000) / 10);
+
+        // Add leading zeros if necessary
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+        milliseconds = (milliseconds < 10) ? "0" + milliseconds : milliseconds;
+
+        return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Boxes</title>
+  <style>
+    /* General styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .box {
+      flex-grow: 1;
+      padding: 20px;
+      border: 1px solid black;
+      text-align: center;
+      margin: 5px;
+      position: relative;
+    }
+
+    .box1,
+    .box3 {
+      background-color: lightblue;
+    }
+
+    .box2 {
+      flex-grow: 0.5;
+      background-color: lightgreen;
+    }
+
+    /* Checkbox styles */
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .checkbox {
+      margin-right: 10px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #555;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .checkbox:checked {
+      background-color: #2196F3;
+      border: 2px solid #2196F3;
+    }
+
+    .checkbox:checked::after {
+      content: '\2714';
+      font-size: 14px;
+      color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Signs in second box */
+    .signs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .signs button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: lightgray;
+      transition: background-color 0.3s ease;
+    }
+
+    .signs button:hover {
+      background-color: lightblue;
+    }
+
+    /* Media query for desktop screens */
+    @media screen and (min-width: 768px) {
+      .box {
+        height: 200px;
+        /* Adjust the height as needed */
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="box box1">
+      <div class="checkbox-container">
+        <input type="checkbox" id="checkbox1" class="checkbox">
+        <label for="checkbox1">Checkbox 1</label>
+        <input type="checkbox" id="checkbox2" class="checkbox">
+        <label for="checkbox2">Checkbox 2</label>
+        <input type="checkbox" id="checkbox3" class="checkbox">
+        <label for="checkbox3">Checkbox 3</label>
+        <input type="checkbox" id="checkbox4" class="checkbox">
+        <label for="checkbox4">Checkbox 4</label>
+        <input type="checkbox" id="checkbox5" class="checkbox">
+        <label for="checkbox5">Checkbox 5</label>
+      </div>
+    </div>
+    <div class="box box2">
+      <div class="signs">
+        <button>&gt;</button>
+        <button>&gt;&gt;</button>
+        <button>&lt;</button>
+        <button>&lt;&lt;</button>
+      </div>
+    </div>
+    <div class="box box3">
+      <div class="checkbox-container">
+        <input type="checkbox" id="checkbox6" class="checkbox">
+        <label for="checkbox6">Checkbox 1</label>
+        <input type="checkbox" id="checkbox7" class="checkbox">
+        <label for="checkbox7">Checkbox 2</label>
+        <input type="checkbox" id="checkbox8" class="checkbox">
+        <label for="checkbox8">Checkbox 3</label>
+        <input type="checkbox" id="checkbox9" class="checkbox">
+        <label for="checkbox9">Checkbox 4</label>
+        <input type="checkbox" id="checkbox10" class="checkbox">
+        <label for="checkbox10">Checkbox 5</label>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+
+<script>
+
+  class transfer {
+
+    constructor(val1, val2) {
+      this.box1 = val1;
+      this.box2 = val2;
+      this.backup_box1=val1;
+      this.backup_box2=val2;
+    }
+
+    singleforward(check) {
+      console.log(check)
+      let arr1 = [...this.box1];
+      let arr2 = [...this.box2];
+      let temp = [...arr1];
+      for (let i = 0; i < arr1.length; i++) {
+        if (check.includes(i)) {
+          console.log(i)
+          arr2.push(arr1[i]);
+          let ele = arr1[i];
+          temp = temp.filter(function (item) {
+            return item !== ele;
+          })
+        }
+      }
+      this.box1 = temp;
+      this.box2 = arr2;
+    }
+
+    allforward() {
+        this.box1=  [...this.backup_box1];
+        this.box2=   [...this.backup_box2];
+        this.box2.push(...this.box1);
+        this.box1=[];
+    }
+
+    single_back() {
+      console.log(check)
+      let arr1 = [...this.box1];
+      let arr2 = [...this.box2];
+      let temp = [...arr2];
+      for (let i = 0; i < arr2.length; i++) {
+        if (check.includes(i)) {
+          console.log(i)
+          arr1.push(arr2[i]);
+          let ele = arr2[i];
+          temp = temp.filter(function (item) {
+            return item !== ele;
+          })
+        }
+      }
+      this.box1 = arr1;
+      this.box2 = temp;
+    }
+
+    allback() {
+      this.box1=  [...this.backup_box1];
+      this.box2=   [...this.backup_box2];
+      this.box1.push(...this.box2);
+      this.box2=[];
+    }
+
+  }
+
+  let trans = new transfer([2, 3, 4, 9], [5, 7, 8, 10]);
+  trans.singleforward([1, 2]);
+  trans.allforward();
+  trans.allback();
+
+  console.log(trans.box1);
+  console.log(trans.box2);
+</script>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Rating System</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.star {
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.star.filled, .star.filled  {
+  color: orange;
+}
+
+#ratingValue {
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+}
+
+</style>
+</head>
+<body>
+
+<div class="rating">
+  <span class="star" data-value="1">&#9733;</span>
+  <span class="star" data-value="2">&#9733;</span>
+  <span class="star" data-value="3">&#9733;</span>
+  <span class="star" data-value="4">&#9733;</span>
+  <span class="star" data-value="5">&#9733;</span>
+</div>
+<div id="ratingValue"></div>
+
+<script>
+const stars = document.querySelectorAll('.star');
+const ratingValue = document.getElementById('ratingValue');
+let ratedValue = 0;
+
+stars.forEach((star) => {
+  star.addEventListener('click', () => {
+    const value = parseInt(star.getAttribute('data-value'));
+    ratedValue = value;
+    ratingValue.innerText = `You rated ${value} stars.`;
+    stars.forEach((s, index) => {
+      if (index < value) {
+        s.classList.add('filled');
+      } else {
+        s.classList.remove('filled');
+      }
+    });
+    // Optionally, you can send the rating to a server or perform any other action here.
+  });
+
+  star.addEventListener('mouseover', () => {
+    const value = parseInt(star.getAttribute('data-value'));
+    stars.forEach((s, index) => {
+      if (index < value) {
+        s.classList.add('filled');
+      } else {
+        s.classList.remove('filled');
+      }
+    });
+  });
+
+  star.addEventListener('mouseleave', () => {
+    stars.forEach((s, index) => {
+      if (index < ratedValue) {
+        s.classList.add('filled');
+      } else {
+        s.classList.remove('filled');
+      }
+    });
+  });
+});
+
+// Optional: Initialize with a predefined rating
+// Replace '3' with the desired initial rating value
+stars[2].click();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Slider</title>
+<style>
+  .slider-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .slider {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden; /* Hide overflowing images */
+  }
+
+  .slides {
+    display: flex;
+  }
+
+  .slides img {
+    width: calc(100% / 3); /* Set width for each image */
+    display: none;
+  }
+
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .prev {
+    left: 0;
+  }
+
+  .next {
+    right: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="slider-container">
+  <div class="slider">
+    <div class="slides"></div>
+    <button class="prev" onclick="prevSlide()">Prev</button>
+    <button class="next" onclick="nextSlide()">Next</button>
+  </div>
+</div>
+
+<script>
+  let slideIndex = 0;
+  const slidesContainer = document.querySelector('.slides');
+
+  // Fetch random images from different sources
+  const imageUrls = [
+    'https://source.unsplash.com/random/500x300',
+    'https://placekitten.com/500/300',
+    'https://loremflickr.com/500/300',
+    'https://picsum.photos/500/300',
+    'https://www.fillmurray.com/500/300',
+    'https://www.placecage.com/500/300'
+  ];
+
+  // Create img element for each image
+  imageUrls.forEach((imageUrl, index) => {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = `Image ${index + 1}`;
+    slidesContainer.appendChild(img);
+  });
+
+  // Show initial slides
+  showSlides(slideIndex);
+
+  // Function to display slides
+  function showSlides(index) {
+    const slides = slidesContainer.querySelectorAll('img');
+
+    // Hide all slides
+    slides.forEach(slide => {
+      slide.style.display = 'none';
+    });
+
+    // Calculate start and end index for visible slides
+    const startIndex = index * 3;
+    const endIndex = Math.min(startIndex + 3, slides.length);
+
+    // Show the visible slides
+    for (let i = startIndex; i < endIndex; i++) {
+      slides[i].style.display = 'block';
+    }
+  }
+
+  // Function to move to previous set of slides
+  function prevSlide() {
+    if (slideIndex === 0) {
+      slideIndex = Math.ceil(slidesContainer.querySelectorAll('img').length / 3) - 1;
+    } else {
+      slideIndex--;
+    }
+    showSlides(slideIndex);
+  }
+
+  // Function to move to next set of slides
+  function nextSlide() {
+    if (slideIndex === Math.ceil(slidesContainer.querySelectorAll('img').length / 3) - 1) {
+      slideIndex = 0;
+    } else {
+      slideIndex++;
+    }
+    showSlides(slideIndex);
+  }
+</script>
+
+</body>
+</html>

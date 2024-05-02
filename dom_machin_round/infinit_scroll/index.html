@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinite Scroll Example</title>
+<style>
+    /* Some basic styles for demonstration */
+    #content {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .item {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+</style>
+</head>
+<body>
+<div id="content">
+    <!-- Initially, we'll have some content already loaded -->
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+    <div class="item">Item 4</div>
+    <div class="item">Item 5</div>
+    <div class="item">Item 6</div>
+    <div class="item">Item 7</div>
+    <div class="item">Item 8</div>
+    <div class="item">Item 5</div>
+    <div class="item">Item 6</div>
+    <div class="item">Item 7</div>
+    <div class="item">Item 8</div>
+
+</div>
+
+<script>
+// Function to fetch more content
+function fetchMoreContent() {
+    // Simulating an asynchronous request (you would replace this with your actual data fetching logic)
+    setTimeout(function() {
+        // Create new content
+        for (var i = 1; i <= 10; i++) {
+            var newItem = document.createElement('div');
+            newItem.className = 'item';
+            newItem.textContent = 'New Item ' + i;
+
+            // Append the new content
+            var content = document.getElementById('content');
+            content.appendChild(newItem);
+        }
+    }, 1000); // Simulated delay of 1 second
+}
+
+// Function to check if user has scrolled to the bottom of the page
+function checkScroll() {
+    var content = document.getElementById('content');
+
+    console.log(window.innerHeight,window.scrollY,content.offsetWidth)
+    if (content) {
+        // Check if the user has scrolled to the bottom
+        if (window.innerHeight + window.scrollY >= content.offsetHeight) {
+            // fetchMoreContent();
+        }
+    }
+}
+
+// Event listener for scrolling
+window.addEventListener('scroll', checkScroll);
+
+// Initial check in case content is shorter than the viewport
+checkScroll();
+</script>
+</body>
+</html>

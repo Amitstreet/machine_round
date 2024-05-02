@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar with Date Picker</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .calendar {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .header h2 {
+        margin: 0;
+    }
+
+    .weekdays {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        background-color: #ddd;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .weekdays div {
+        width: calc(100% / 7);
+    }
+
+    .dates {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px 0;
+    }
+
+    .dates div {
+        width: calc(100% / 7);
+        padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .prev-month,
+    .next-month {
+        color: #aaa;
+        cursor: pointer;
+    }
+
+    .current-month {
+        font-weight: bold;
+    }
+
+    .event {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
+
+    .selected {
+        background-color: #4CAF50;
+        color: white;
+    }
+</style>
+</head>
+<body>
+<div class="calendar">
+    <div class="header">
+        <span class="prev-month" onclick="prevMonth()">&#10094;</span>
+        <h2 class="current-month" id="currentMonth"></h2>
+        <span class="next-month" onclick="nextMonth()">&#10095;</span>
+    </div>
+    <div class="weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+    </div>
+    <div class="dates" id="dates"></div>
+</div>
+<script>
+    var currentDate = new Date();
+    var currentMonth = currentDate.getMonth();
+    var currentYear = currentDate.getFullYear();
+    var selectedDate = null;
+
+    function generateCalendar(month, year) {
+        var firstDayOfMonth = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        var datesContainer = document.getElementById('dates');
+        datesContainer.innerHTML = '';
+
+        // Fill in the dates of the previous month if necessary
+        for (var i = firstDayOfMonth; i > 0; i--) {
+            var date = new Date(year, month, -i + 1);
+            datesContainer.innerHTML += '<div class="prev-month">' + date.getDate() + '</div>';
+        }
+
+        // Fill in the dates of the current month
+        for (var i = 1; i <= daysInMonth; i++) {
+            var date = new Date(year, month, i);
+            var className = (date.getMonth() === currentMonth) ? 'current-month' : 'next-month';
+            if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                className += ' selected';
+            }
+            datesContainer.innerHTML += '<div class="' + className + '" onclick="selectDate(this)">' + i + '</div>';
+        }
+    }
+
+    function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        updateCalendar();
+    }
+
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        updateCalendar();
+    }
+
+    function updateCalendar() {
+        var currentMonthElement = document.getElementById('currentMonth');
+        currentMonthElement.innerText = new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        generateCalendar(currentMonth, currentYear);
+    }
+
+    function selectDate(element) {
+        var selectedElements = document.querySelectorAll('.selected');
+        selectedElements.forEach(function(selectedElement) {
+            selectedElement.classList.remove('selected');
+        });
+
+        var date = new Date(currentYear, currentMonth, parseInt(element.innerText));
+        element.classList.add('selected');
+        selectedDate = date;
+        console.log('Selected date:', selectedDate);
+    }
+
+    // Initial call to display current month
+    updateCalendar();
+</script>
+</body>
+</html>

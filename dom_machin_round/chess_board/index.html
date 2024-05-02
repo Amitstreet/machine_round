@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8x8 Grid UI</title>
+<style>
+    /* Styling for the parent container */
+    .container {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+    }
+    
+    /* Styling for the grid container */
+    .grid-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 320px; /* 8 boxes * 40px width = 320px */
+    }
+    
+    /* Styling for the grid items */
+    .grid-item {
+        width: 40px;
+        height: 40px;
+        background-color: lightgray; /* Optional: Set a default background color */
+        border: 1px solid gray; /* Optional: Add a border for visual clarity */
+        box-sizing: border-box; /* Optional: Include border in box dimensions */
+    }
+</style>
+</head>
+<body>
+
+<!-- Parent container to center the grid -->
+<div class="container">
+    <!-- Grid container -->
+    <div class="grid-container" id="gridContainer">
+        <!-- JavaScript will populate this -->
+    </div>
+</div>
+
+<script>
+    class chess{
+    constructor()
+    {
+      this.gridContainer = document.getElementById("gridContainer");
+      this.remove=[];
+    }
+
+    remove_1()
+    {
+        while(this.remove.length>0)
+        {
+            let obj= this.remove.pop();
+            obj.ele.style.backgroundColor=obj.backgroundColor
+        }
+    }
+
+    process(event)
+    { 
+        this.remove_1();
+        let id= event.target.id;
+        let row=parseInt(id.split("_")[0]);
+        let col= parseInt(id.split("_")[1]);
+       this.rupper(row,col);
+       this.ldown(row,col);
+       this.lupper(row,col);
+       this.rdown(row,col);
+    }
+
+
+    rupper(row,col)
+    {
+        while( row>=1&& col<=8 )
+        {
+            let class_name= `${row}`+"_"+`${col}`;
+            row--;
+            col++;
+            let ele= document.getElementById(`${class_name}`);
+
+            this.remove.push({
+                ele:ele,
+                backgroundColor:ele.style.backgroundColor
+            });
+
+            ele.style.backgroundColor="red";
+
+        }
+    }
+
+    ldown(row,col)
+    {
+        while( col>=1&& row<=8 )
+        {
+            let class_name= `${row}`+"_"+`${col}`;
+            row++;
+            col--;
+            let ele= document.getElementById(`${class_name}`);
+            this.remove.push({
+                ele:ele,
+                backgroundColor:ele.style.backgroundColor
+            });
+            ele.style.backgroundColor="red";
+        }
+    }
+
+    lupper(row,col)
+    {
+        while( col<=8 && row<=8 )
+        {
+            let class_name= `${row}`+"_"+`${col}`;
+            row++;
+            col++;
+            let ele= document.getElementById(`${class_name}`);
+            this.remove.push({
+                ele:ele,
+                backgroundColor:ele.style.backgroundColor
+            });
+            ele.style.backgroundColor="red";
+        }
+    }
+
+    rdown(row,col)
+    {
+        while( col>=1&& row>=1 )
+        {
+            let class_name= `${row}`+"_"+`${col}`;
+            row--;
+            col--;
+            let ele= document.getElementById(`${class_name}`);
+            this.remove.push({
+                ele:ele,
+                backgroundColor:ele.style.backgroundColor
+            });
+            ele.style.backgroundColor="red";
+        }
+    }
+
+
+    creat()
+    {
+        for(var i = 1; i <=8; i++) {
+           for(var j=1;j<=8;j++)
+         {  
+            if((i+j)%2==0)
+            {
+             var gridItem = document.createElement("div");
+             gridItem.classList.add("grid-item");  
+             gridItem.setAttribute("id",`${i}`+"_"+`${j}`);  
+             gridItem.style.backgroundColor = 'white';
+             gridItem.addEventListener("click",this.process.bind(this));
+             this.gridContainer.appendChild(gridItem);
+            }
+            else{
+                var gridItem = document.createElement("div");
+                gridItem.style.backgroundColor = 'black';
+                gridItem.classList.add("grid-item");  
+                gridItem.setAttribute('id',`${i}`+"_"+`${j}`);  
+                gridItem.classList.add("grid-item");
+                gridItem.addEventListener("click",this.process.bind(this));
+                this.gridContainer.appendChild(gridItem);  
+            }
+          }
+        }
+    }
+  }
+let Chess= new chess();
+Chess.creat();
+</script>
+
+</body>
+</html>

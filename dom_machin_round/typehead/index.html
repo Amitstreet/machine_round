@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typeahead with Debounce and API</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #search-container {
+    text-align: center;
+  }
+
+  #search-input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  #suggestions-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0 0;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #suggestions-list li:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+
+<div id="search-container">
+  <input type="text" id="search-input" placeholder="Type here...">
+  <ul id="suggestions-list"></ul>
+</div>
+
+<script>
+  // Debounce function
+  function debounce(func, delay) {
+    let timeoutId;
+    return function() {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function() {
+        func.apply(context, args);
+      }, delay);
+    };
+  }
+
+  // Function to fetch suggestions asynchronously from Random User Generator API
+  async function fetchSuggestions(query) {
+    const response = await fetch(`https://randomuser.me/api/?results=5&seed=${query}`);
+    const data = await response.json();
+    const suggestions = data.results.map(result => `${result.name.first} ${result.name.last}`);
+    return suggestions;
+  }
+
+  // Function to update suggestions
+  async function updateSuggestions() {
+    const query = document.getElementById('search-input').value;
+    const suggestions = await fetchSuggestions(query);
+    const suggestionsList = document.getElementById('suggestions-list');
+    suggestionsList.innerHTML = '';
+    suggestions.forEach(suggestion => {
+      const li = document.createElement('li');
+      li.textContent = suggestion;
+      suggestionsList.appendChild(li);
+    });
+  }
+
+  // Debounced version of updateSuggestions
+  const debouncedUpdateSuggestions = debounce(updateSuggestions, 300);
+
+  // Event listener for input field
+  document.getElementById('search-input').addEventListener('input', debouncedUpdateSuggestions);
+</script>
+
+</body>
+</html>

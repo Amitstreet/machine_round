@@ -1,0 +1,64 @@
+.old-price .price {
+    color: #FF0000;
+}
+
+
+.cart-summary .shipping .price::after {
+    content: "Free";
+    font-size: 13px;
+}
+
+
+.cart-summary .shipping .price{
+  font-size: 0px;
+}
+#toolbar-amount{
+  font-size:13px;
+}
+.cart-summary .shipping .mark::after {
+    content: "Shipping Charge(1-3 days)";
+    font-size: 13px;
+}
+.cart-summary .shipping .mark{
+  font-size: 0px !important;
+}
+
+
+
+   /* ARABIUC */
+
+
+
+.cart-summary .shipping .price::after {
+    content: "مجانًا";
+    font-size: 13px;
+}
+
+
+.cart-summary .shipping .price{
+  font-size: 0px;
+}
+
+.cart-summary .shipping .mark::after {
+    content: "رسوم الشحن (1-3 ايام)";
+    font-size: 13px;
+}
+
+
+.cart-summary .shipping .mark{
+  font-size: 0px !important;
+}
+
+
+@media (min-width: 991px) {
+  .nav-sections-item-content .magicmenu {
+    display: -webkit-flex;
+  }
+}
+
+
+@media (min-width: 991px) {
+  .nav-sections-item-content .magicmenu {
+      display: block;
+  }
+}

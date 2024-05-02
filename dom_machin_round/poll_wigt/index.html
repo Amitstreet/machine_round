@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poll Widget</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .poll {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #results {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    #results div {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="poll">
+    <h2>What is your favorite programming language?</h2>
+    <form id="pollForm">
+      <label>
+        <input type="radio" name="language" value="javascript">
+        JavaScript
+      </label>
+      <label>
+        <input type="radio" name="language" value="python">
+        Python
+      </label>
+      <label>
+        <input type="radio" name="language" value="java">
+        Java
+      </label>
+      <label>
+        <input type="radio" name="language" value="c++">
+        C++
+      </label>
+      <button type="submit">Vote</button>
+    </form>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const pollForm = document.getElementById('pollForm');
+    const resultsDiv = document.getElementById('results');
+
+    // Initialize vote counts
+    const votes = {
+      javascript: 0,
+      python: 0,
+      java: 0,
+      'c++': 0
+    };
+
+    pollForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const selectedLanguage = document.querySelector('input[name="language"]:checked');
+      if (selectedLanguage) {
+        votes[selectedLanguage.value]++;
+        updateResults();
+        selectedLanguage.checked = false;
+      } else {
+        alert('Please select a language before voting.');
+      }
+    });
+
+    function updateResults() {
+      resultsDiv.innerHTML = '';
+      for (const language in votes) {
+        const percentage = ((votes[language] / getTotalVotes()) * 100).toFixed(2);
+        const resultItem = document.createElement('div');
+        resultItem.textContent = `${language}: ${votes[language]} votes (${percentage}%)`;
+        resultsDiv.appendChild(resultItem);
+      }
+    }
+
+    function getTotalVotes() {
+      return Object.values(votes).reduce((total, count) => total + count, 0);
+    }
+  </script>
+</body>
+</html>

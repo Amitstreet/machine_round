@@ -1,0 +1,66 @@
+
+<div class="container">
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/2d3W3gx/solen-feyissa-t-Sf-SZb-eoc-E-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/jbSBgb3/martin-berrios-7k77y-Shzj-Zg-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/JtVC6PN/martin-berrios-8-MN2t-PMTt2-U-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/dgd1ntX/lukas-zischke-9-Ui-Lva-Ib-G3g-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/wMrkqLY/marek-piwnicki-TZm-S-dj6l-Zw-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+  <div class="img-wrapper">
+    <img src="https://i.ibb.co/nbvWJW9/image-placeholder-for-lazy-loading.png" data-src="https://i.ibb.co/28hL9tJ/solen-feyissa-CY-QLAC-lj-A-unsplash.jpg" class="lazy-loaded-image lazy"/>
+  </div>
+</div>
+<style>
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.img-wrapper{
+   width: 300px;
+  height: 300px;
+  border: 1px solid #444;
+  margin: 20px;
+}
+img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+
+
+
+</style>
+
+<script>
+    /** First we get all the non-loaded image elements **/
+var lazyImages = [].slice.call(document.querySelectorAll(".lazy-loaded-image.lazy"));
+
+/** Then we set up a intersection observer watching over those images and whenever any of those becomes visible on the view then replace the placeholder image with actual one, remove the non-loaded class and then unobserve for that element **/
+let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            let lazyImage = entry.target;
+            lazyImage.src = lazyImage.dataset.src;
+            lazyImage.classList.remove("lazy");
+            lazyImageObserver.unobserve(lazyImage);
+        }
+    });
+});
+
+/** Now observe all the non-loaded images using the observer we have setup above **/
+lazyImages.forEach(function(lazyImage) {
+    lazyImageObserver.observe(lazyImage);
+});
+</script>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scroll Example</title>
+<style>
+    body {
+        height: 2000px; /* Adding a height to the body to create scrolling */
+    }
+</style>
+</head>
+<body>
+<div id="info"></div>
+
+<script>
+function updateScrollInfo() {
+    var info = document.getElementById('info');
+    info.innerHTML = 'Window Height: ' + window.innerHeight + '<br>' +
+                      'Scroll Y: ' + window.scrollY;
+}
+
+// Update scroll info when the page is scrolled or resized
+window.addEventListener('scroll', updateScrollInfo);
+window.addEventListener('resize', updateScrollInfo);
+
+// Initial update
+updateScrollInfo();
+</script>
+</body>
+</html>
